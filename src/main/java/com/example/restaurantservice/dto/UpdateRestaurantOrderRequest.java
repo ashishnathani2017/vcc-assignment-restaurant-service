@@ -1,32 +1,23 @@
 package com.example.restaurantservice.dto;
 
-import java.time.Instant;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public class OrderResponse {
+public class UpdateRestaurantOrderRequest {
 
-    private Long id;
-    private Long restaurantId;
+    @NotBlank
     private String customerName;
+
+    @NotBlank
     private String itemName;
+
+    @NotNull
+    @Min(1)
     private Integer quantity;
+
+    @NotBlank
     private String status;
-    private Instant createdAt;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getRestaurantId() {
-        return restaurantId;
-    }
-
-    public void setRestaurantId(Long restaurantId) {
-        this.restaurantId = restaurantId;
-    }
 
     public String getCustomerName() {
         return customerName;
@@ -58,13 +49,5 @@ public class OrderResponse {
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
     }
 }

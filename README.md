@@ -9,6 +9,9 @@ APIs:
 - `PUT /api/restaurants/{id}`
 - `DELETE /api/restaurants/{id}`
 - `POST /api/restaurants/{restaurantId}/orders`
+- `GET /api/restaurants/{restaurantId}/orders`
+- `GET /api/restaurants/{restaurantId}/orders/{orderId}`
+- `PUT /api/restaurants/{restaurantId}/orders/{orderId}`
 
 The restaurant-level order endpoint forwards order data to the order service.
 
