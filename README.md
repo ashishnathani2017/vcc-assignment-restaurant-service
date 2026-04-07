@@ -13,6 +13,10 @@ APIs:
 - `GET /api/restaurants/{restaurantId}/orders/{orderId}`
 - `PUT /api/restaurants/{restaurantId}/orders/{orderId}`
 
+Metrics:
+- `GET /actuator/health`
+- `GET /actuator/prometheus`
+
 The restaurant-level order endpoint forwards order data to the order service.
 
 Run:
@@ -26,6 +30,27 @@ Test:
 ```bash
 mvn -Dmaven.repo.local=.m2 test
 ```
+
+## Local Monitoring
+
+Prometheus and Grafana are configured for local use in:
+- `docker-compose.monitoring.yml`
+- `monitoring/prometheus/prometheus.yml`
+- `monitoring/grafana/...`
+
+When Docker is available and both services are running locally:
+
+```bash
+docker compose -f docker-compose.monitoring.yml up -d
+```
+
+Then open:
+- Prometheus: `http://localhost:9090`
+- Grafana: `http://localhost:3000`
+
+Grafana login:
+- username: `admin`
+- password: `admin`
 
 ## AWS ECS Deployment
 
