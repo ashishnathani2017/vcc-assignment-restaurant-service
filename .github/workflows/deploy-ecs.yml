@@ -9,10 +9,8 @@ on:
 env:
   AWS_REGION: ${{ secrets.AWS_REGION }}
   ECR_REPOSITORY: restaurant-service
-  ECS_SERVICE: restaurant-service
-  ECS_CLUSTER: applications
-  ECS_TASK_DEFINITION: ecs/task-definition.json
-  CONTAINER_NAME: restaurant-service
+  STACK_NAME: restaurant-service
+  TEMPLATE_FILE: aws/cloudformation/ecs-fargate-service.yml
 
 jobs:
   deploy:
@@ -45,18 +43,20 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Render Amazon ECS Task Definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ${{ env.ECS_TASK_DEFINITION }}
-          container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ steps.build-image.outputs.image }}
-
-      - name: Deploy Amazon ECS Task Definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
-          cluster: ${{ env.ECS_CLUSTER }}
-          wait-for-service-stability: true
+      - name: Deploy CloudFormation Stack
+        run: |
+          aws cloudformation deploy \
+            --stack-name $STACK_NAME \
+            --template-file $TEMPLATE_FILE \
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides \
+              ImageUri=${{ steps.build-image.outputs.image }} \
+              VpcId=${{ secrets.AWS_VPC_ID }} \
+              SubnetIds=${{ secrets.AWS_SUBNET_IDS }} \
+              SecurityGroupIds=${{ secrets.AWS_SECURITY_GROUP_IDS }} \
+              ListenerArn=${{ secrets.AWS_ALB_LISTENER_ARN }} \
+              LoadBalancerFullName=${{ secrets.AWS_ALB_FULL_NAME }} \
+              TaskExecutionRoleArn=${{ secrets.AWS_ECS_EXECUTION_ROLE_ARN }} \
+              TaskRoleArn=${{ secrets.AWS_RESTAURANT_TASK_ROLE_ARN }} \
+              AlarmTopicArn=${{ secrets.AWS_ALARM_TOPIC_ARN }} \
+              OrderServiceBaseUrl=${{ secrets.ORDER_SERVICE_BASE_URL }}
