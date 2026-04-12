@@ -52,6 +52,17 @@ Grafana login:
 - username: `admin`
 - password: `admin`
 
+## Performance Testing
+
+Performance load, stress, chaos, and Grafana dashboard assets are available in:
+- `performance/k6/incremental-load.js`
+- `performance/scripts/run-k6-incremental.sh`
+- `performance/scripts/run-stress-ng-peak.sh`
+- `performance/scripts/run-chaos-mesh.sh`
+- `performance/grafana/k6-load-testing-dashboard.json`
+
+See `performance/README.md` for usage.
+
 ## AWS ECS Deployment
 
 This service is ready to run on AWS ECS Fargate through CloudFormation.
